@@ -94,8 +94,6 @@ vcpkg/
 vcpkg_installed/
 
 # --- Project-Specific ---
-# Ignore output images/videos
-*.jpg
-*.png
-*.mp4
+# Ignore output videos
+*.mp41
 *.avi
