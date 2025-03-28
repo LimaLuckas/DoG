@@ -4,6 +4,7 @@
 
 using namespace cv;
 
+//Callback functions used to update the filter parameters based on the sliders
 void onSigmaChange(int pos, void* data){
 
     DogFilter* filter = static_cast<DogFilter*>(data);
@@ -11,7 +12,6 @@ void onSigmaChange(int pos, void* data){
     Mat output;
     filter->applyFilter(output);
     cv::imshow("DoG Filter", output);
-
 }
 
 void onKChange(int pos, void* data) {
@@ -50,19 +50,21 @@ void onPhiChange(int pos, void* data) {
 
 int main(){
 
+    //Type your source image path below
     std::string path = "../examples/Stanczyk.jpg";
     Mat input = cv::imread(path);
     if (input.empty())
     {
-        std::cerr << "Não foi possivel carregar a imagem, tente outro endereco" << std::endl;
+        std::cerr << "Fail to reach the image path, get the right path and try again." << std::endl;
         return -1;
     }
 
     // true for colored blending with the filter, false for grayscale application of the filter
-    DogFilter filter(input, false);
+    DogFilter filter(input, true);
 
     namedWindow("DoG Filter", WINDOW_AUTOSIZE);
 
+    //All trackbar values are divided by 100 for more granular control
     createTrackbar("Sigma", "DoG Filter", nullptr, 5000, onSigmaChange, &filter);
     createTrackbar("K", "DoG Filter", nullptr, 5000, onKChange, &filter);
     createTrackbar("P", "DoG Filter", nullptr, 5000, onPChange, &filter);

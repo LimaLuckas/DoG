@@ -34,15 +34,15 @@ Mat DogFilter::threshold(const Mat& dog, bool useMask){
     Mat tanhMat = computeTanh(term);
 
     //Make a mask and compare if the DoG blurred image luminance is lower than epsilon 
-    //If it is, the luminance position in the mask will be 255
-    //Convert to 32float and normalize
+    //If it is, the luminance position in the mask will be 255, otherwise, 0
+    //Convert to 32float and normalize to [0,1]
 
     Mat mask;
     cv::compare(dog, epsilon, mask, CMP_LT);
     mask.convertTo(mask, CV_32F, 1.0/255);
         
     //Sum element-wise a ones matrix with the mask multiplied element-wise to the tanh for thresholding
-
+    //If you're adding a new soft thresholding, certify that operates between [-1,0] to modify the values in the threshold
     Mat thresholded = Mat::ones(dog.size(), CV_32F) + mask.mul(tanhMat);
 
     if (useMask) {
@@ -55,6 +55,7 @@ Mat DogFilter::threshold(const Mat& dog, bool useMask){
 
         //Get the colored image and convert to 32float
         //normalize as well
+
         Mat original32f;
         image.convertTo(original32f, CV_32F, 1.0/255);
         //original32f /= 255.0;                 
@@ -67,10 +68,10 @@ Mat DogFilter::threshold(const Mat& dog, bool useMask){
     return thresholded;
 }
 
+//This is just one of many function implementations to apply thresholding, you can make your own and substitute!
 Mat DogFilter::computeTanh(const Mat& term){
         
     //computation of the tanh function
-
     Mat twoTerm = 2 * term;
     Mat expTwoTerm;
     cv::exp(twoTerm, expTwoTerm);
